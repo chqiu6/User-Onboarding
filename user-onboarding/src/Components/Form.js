@@ -20,7 +20,8 @@ const formSchema = yup.object().shape({
     .string()
     .min(6, "Password input must be 6 or more characters")
     .required("Required input password"),
-    terms: yup.boolean().oneOf([true], "Please agree to terms")
+    // terms: yup.boolean().oneOf([true],"Please agree to terms")
+    terms: yup.boolean().oneOf([true], "Please agree to terms of use")
 });
 
 export default function Form() {
@@ -28,9 +29,10 @@ export default function Form() {
         name:"",
         email:"",
         password:"",
-        terms:"false"
+        terms: false
     });
 
+    // const [terms,setTerms] = useState(false);
     //to contain errors
     const [errors, setErrors] = useState({
         name:"",
@@ -40,9 +42,11 @@ export default function Form() {
     });
 
     const validate = e => {
+        let value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
     yup
     .reach(formSchema, e.target.name)
-    .validate(e.target.value)
+    .validate(value)
     .then(valid => {
         setErrors({...errors, [e.target.name]: ""});
     })
@@ -54,11 +58,14 @@ export default function Form() {
 
     const inputChange = e => {
         e.persist();
-        console.log(e.target.value);
+        console.log(e.target.value, e.target.checked);
         console.log("users : ", users);
         validate(e); 
-        let value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-        setUsers({...users, [e.target.name] : value});
+        // let value = e.target.type ==="checkbox"?e.target.checked:e.target.value;
+        // setUsers({...users, [e.target.name]:value});
+        let value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setUsers({ ...users, [e.target.name]: value });
     };
 
     const formSubmit = e => {
@@ -118,7 +125,8 @@ export default function Form() {
             type = "checkbox"
             name = "terms"
             id = "terms"
-            value = {users.terms}
+            checked = {users.terms}
+            // onChange = {(event) =>setTerms(!terms)}
             onChange = {inputChange}
             />
             {errors.terms.length > 0 ? (
